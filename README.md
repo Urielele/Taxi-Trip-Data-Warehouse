@@ -1,4 +1,4 @@
-# NYC Taxi Trip & Weather Data Warehouse Analysis
+# NYC Taxi Trip Data Warehouse Analysis
 
 An End-to-End Data Engineering project focused on building a scalable Data Warehouse using Python and PostgreSQL.
 
