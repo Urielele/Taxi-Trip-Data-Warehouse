@@ -1,0 +1,35 @@
+2026-03-26 22:35:21 - INFO - EXTRACT START: Fetching Taxi Zone Lookup
+2026-03-26 22:35:21 - INFO - SOURCE URL   : https://d37ci6vzurychx.cloudfront.net/misc/taxi+_zone_lookup.csv
+2026-03-26 22:35:21 - INFO - ARCHIVE SUCCESS: taxi_zone_lookup.csv
+2026-03-26 22:35:21 - INFO - DESTINATION    : raw/Taxi Zone/0/0\taxi_zone_lookup.csv
+2026-03-26 22:35:21 - INFO - SUCCESS      : Saved to landing/taxi_zone_lookup.csv
+2026-03-26 22:35:21 - INFO - EXTRACT START: Downloading yellow_tripdata_2023-01.parquet
+2026-03-26 22:35:21 - INFO - SOURCE URL   : https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-01.parquet
+2026-03-26 22:35:30 - INFO - ARCHIVE SUCCESS: yellow_tripdata_2023-01.parquet
+2026-03-26 22:35:30 - INFO - DESTINATION    : raw/Trip Records/2023/1\yellow_tripdata_2023-01.parquet
+2026-03-26 22:35:30 - INFO - SUCCESS      : yellow_tripdata_2023-01.parquet saved to landing/yellow_tripdata_2023-01.parquet
+2026-03-26 22:35:30 - INFO - EXTRACT START: Downloading weather_2023_01.json
+2026-03-26 22:35:30 - INFO - SOURCE URL   : https://archive-api.open-meteo.com/v1/archive?latitude=40.71&longitude=-74&start_date=2023-01-01&end_date=2023-01-31&hourly=temperature_2m,precipitation,weather_code
+2026-03-26 22:35:31 - INFO - ARCHIVE SUCCESS: weather_2023_01.json
+2026-03-26 22:35:31 - INFO - DESTINATION    : raw/Weather/2023/1\weather_2023_01.json
+2026-03-26 22:35:31 - INFO - SUCCESS      : weather_2023_01.json saved to landing/weather_2023_01.json
+2026-03-26 22:35:31 - INFO - EXTRACT START: Downloading yellow_tripdata_2023-02.parquet
+2026-03-26 22:35:31 - INFO - SOURCE URL   : https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-02.parquet
+2026-03-26 22:35:37 - INFO - ARCHIVE SUCCESS: yellow_tripdata_2023-02.parquet
+2026-03-26 22:35:37 - INFO - DESTINATION    : raw/Trip Records/2023/2\yellow_tripdata_2023-02.parquet
+2026-03-26 22:35:37 - INFO - SUCCESS      : yellow_tripdata_2023-02.parquet saved to landing/yellow_tripdata_2023-02.parquet
+2026-03-26 22:35:37 - INFO - EXTRACT START: Downloading weather_2023_02.json
+2026-03-26 22:35:37 - INFO - SOURCE URL   : https://archive-api.open-meteo.com/v1/archive?latitude=40.71&longitude=-74&start_date=2023-02-01&end_date=2023-02-28&hourly=temperature_2m,precipitation,weather_code
+2026-03-26 22:35:38 - INFO - ARCHIVE SUCCESS: weather_2023_02.json
+2026-03-26 22:35:38 - INFO - DESTINATION    : raw/Weather/2023/2\weather_2023_02.json
+2026-03-26 22:35:38 - INFO - SUCCESS      : weather_2023_02.json saved to landing/weather_2023_02.json
+2026-03-26 22:35:38 - INFO - EXTRACT START: Downloading yellow_tripdata_2023-03.parquet
+2026-03-26 22:35:38 - INFO - SOURCE URL   : https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-03.parquet
+2026-03-26 22:35:47 - INFO - ARCHIVE SUCCESS: yellow_tripdata_2023-03.parquet
+2026-03-26 22:35:47 - INFO - DESTINATION    : raw/Trip Records/2023/3\yellow_tripdata_2023-03.parquet
+2026-03-26 22:35:47 - INFO - SUCCESS      : yellow_tripdata_2023-03.parquet saved to landing/yellow_tripdata_2023-03.parquet
+2026-03-26 22:35:47 - INFO - EXTRACT START: Downloading weather_2023_03.json
+2026-03-26 22:35:47 - INFO - SOURCE URL   : https://archive-api.open-meteo.com/v1/archive?latitude=40.71&longitude=-74&start_date=2023-03-01&end_date=2023-03-31&hourly=temperature_2m,precipitation,weather_code
+2026-03-26 22:35:48 - INFO - ARCHIVE SUCCESS: weather_2023_03.json
+2026-03-26 22:35:48 - INFO - DESTINATION    : raw/Weather/2023/3\weather_2023_03.json
+2026-03-26 22:35:48 - INFO - SUCCESS      : weather_2023_03.json saved to landing/weather_2023_03.json

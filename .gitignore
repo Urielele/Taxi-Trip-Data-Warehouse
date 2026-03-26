@@ -1,0 +1,21 @@
+### Python ###
+__pycache__/
+*.py[cod]
+*$py.class
+etl/__pycache__/
+
+### Environment ###
+.env
+
+### Data Folders (Ignore all content except .gitkeep) ###
+landing/*
+
+raw/Taxi Zone/*
+raw/Trip Records/*
+raw/Weather/*
+
+### Global Gitkeep Rule ###
+!**/.gitkeep
+
+### Document ###
+document/schema.docx
