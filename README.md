@@ -55,6 +55,19 @@ Proyek ini mengimplementasikan **Star Schema** untuk optimalisasi query analitik
     ```
 3.  **Monitoring:** Pantau progres proses melalui file di direktori `/logs`.
 
+## 🛠️ Data Transformation & Cleaning
+Dalam proses ETL ini, saya melakukan beberapa tahap pembersihan data:
+* **Handling Outliers:** Mengisi nilai `passenger_count` yang bernilai 0 atau NULL dengan angka 1 (asumsi minimal 1 penumpang).
+* **Data Integrity:** Meskipun file sumbernya berlabel Januari 2023, hasil *Data Profiling* menunjukkan adanya data dari Oktober 2022. Saya menerapkan *Dynamic Filtering* berdasarkan metadata nama file untuk memastikan integritas data di tabel Fakta.
+* **Type Casting:** Mengubah tipe data kolom dari `float` ke `int` untuk optimalisasi memori di PostgreSQL.
+
+## 🚀 Challenges Faced
+Selama pengerjaan proyek, saya menemukan beberapa anomali data:
+1. **Anomali Waktu:** Terdapat baris data dengan tahun 2008 dan 2022 di dalam dataset Januari 2023.
+   - **Solusi:** Saya menerapkan *Dynamic Filtering* berdasarkan metadata nama file untuk memastikan integritas data di tabel Fakta.
+2. **Missing Values:** Banyaknya nilai 0 pada kolom metrik penting.
+   - **Solusi:** Melakukan *Imputation* menggunakan nilai median/modus agar volume data tetap terjaga tanpa merusak statistik.
+
 ---
 
 ## English Version
@@ -98,6 +111,19 @@ The project implements a **Star Schema** designed for analytical query optimizat
     python main.py
     ```
 3.  **Monitoring:** Monitor the process progress via the files in the `/logs` directory.
+
+## 🛠️ Data Transformation & Cleaning
+During the ETL process, several data cleaning steps were performed:
+* **Handling Outliers:** Imputed `passenger_count` values of 0 or NULL with 1 (assuming at least one passenger per trip).
+* **Data Integrity:** Although the source file was labeled January 2023, data profiling revealed entries from October 2022. I implemented *Dynamic Filtering* based on file metadata to ensure the Fact table remains chronologically accurate.
+* **Type Casting:** Converted specific columns from `float` to `int` to optimize memory usage and storage efficiency in PostgreSQL.
+
+## 🚀 Challenges Faced
+I encountered several data anomalies during development:
+1. **Time Anomalies:** Found records with years 2008 and 2022 within the January 2023 dataset.
+   - **Solution:** Applied *Dynamic Filtering* using filename metadata (regex year-month) to maintain Fact table integrity.
+2. **Missing Values:** High frequency of 0 values in critical metric columns.
+   - **Solution:** Performed *Imputation* using median/mode values to preserve data volume without skewing overall statistics.
 
 ---
 

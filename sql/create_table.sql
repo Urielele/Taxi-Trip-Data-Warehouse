@@ -8,7 +8,7 @@ CREATE TABLE dim_location (
 
 CREATE TYPE DOW AS ENUM ('sun', 'mon', 'tue', 'wed', 'thu', 'fri', 'sat');
 CREATE TABLE dim_datetime (
-  date_key INT,
+  date_key BIGINT,
   hour INT,
   day INT,
   day_of_week DOW,
@@ -24,14 +24,10 @@ CREATE TABLE dim_datetime (
 CREATE TABLE dim_weather (
   weather_key INT,
   full_time_stamp TIMESTAMP,
-  day INT,
-  hour INT,
   weather_code INT,
   temperature DECIMAL,
   precipitation DECIMAL,
-  PRIMARY KEY (weather_key),
-  CONSTRAINT day_check CHECK (day BETWEEN 1 AND 31),
-  CONSTRAINT hour_check CHECK (hour BETWEEN 1 AND 31)
+  PRIMARY KEY (weather_key)
 );
 
 
@@ -45,8 +41,8 @@ CREATE TABLE dim_payment (
 CREATE TABLE fact_taxi_trips (
   pickup_location INT,
   dropoff_location INT,
-  pickup_datetime INT,
-  dropoff_datetime INT,
+  pickup_datetime BIGINT,
+  dropoff_datetime BIGINT,
   weather_key INT,
   payment_id INT,
   total_passenger INT,

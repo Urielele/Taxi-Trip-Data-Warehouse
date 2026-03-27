@@ -1,7 +1,9 @@
 import pandas as pd
+import numpy as np
 import json
 import os
 import logging
+import re
 from datetime import datetime
 
 
@@ -61,8 +63,112 @@ def transform_zone(file_path: str):
 
 
 def transform_trip_data(file_path: str):
-    df_trip = pd.read_parquet("landing/yellow_tripdata_2023-01.parquet")
-    print(df_trip.head(5))
+    
+    file_name = os.path.basename(file_path)
+
+    file_info = re.search(r'(\d{4})-(\d{2})', file_name)
+    target_year = int(file_info.group(1))
+    target_month = int(file_info.group(2))
+
+    print(target_year)
+    print(target_month)
+
+    logging.info(f"TRANSFORM START: Processing {file_name}")
+    logging.info(f"FILE PATH      : {file_path}")
+
+    try:
+        # [1] Load Data
+        df_clean = pd.read_parquet(file_path)
+
+        logging.info(f"STEP [1/6]     : CSV data loaded into DataFrame. Rows: {len(df_clean)}")
+
+        # [2] Drop Irrelevant Column
+        df_clean.drop(columns=[
+            'VendorID',
+            'RatecodeID',
+            'store_and_fwd_flag',
+            'extra',
+            'mta_tax',
+            'tolls_amount',
+            'improvement_surcharge',
+            'congestion_surcharge',
+            'airport_fee'
+            ],
+            inplace=True
+        )
+
+        logging.info(f"STEP [2/n]     : Drop 'VendorID', 'RatecodeID', 'store_and_fwd_flag', 'extra', 'mta_tax', 'tolls_amount', 'improvement_surcharge', 'congestion_surcharge', 'airport_fee' column.")
+
+        # [3] Valdation Data
+
+        mode_passenger = df_clean['passenger_count'].mode()[0]
+        df_clean['passenger_count'] = df_clean['passenger_count'].replace(0, np.nan).fillna(mode_passenger)
+
+        mean_distance = df_clean[df_clean['trip_distance'] > 0]['trip_distance'].mean()
+        df_clean['trip_distance'] = df_clean['trip_distance'].replace(0, mean_distance)
+
+        df_clean = df_clean[(df_clean['fare_amount'] > 0) & (df_clean['total_amount'] > 0)]
+
+        df_clean = df_clean[
+            (df_clean['tpep_pickup_datetime'].dt.year == target_year) & 
+            (df_clean['tpep_pickup_datetime'].dt.month == target_month)
+            ]
+        
+        # [4] Renaming & Reorder Column
+
+        print(df_clean['passenger_count'].dtype)
+        
+        print(df_clean['passenger_count'].dtype)
+
+        df_clean.rename(
+            columns={
+                'tpep_pickup_datetime' : 'pickup_datetime',
+                'tpep_dropoff_datetime' : 'dropoff_datetime',
+                'passenger_count' : 'total_passenger',
+                'PULocationID' : 'pickup_location',
+                'DOLocationID' : 'dropoff_location',
+                'payment_type' : 'payment_id',
+            },
+            inplace=True
+        )
+
+        # [5] Reorder Columns
+
+        target_columns = ['pickup_location', 'dropoff_location', 'pickup_datetime', 'dropoff_datetime', 
+                         'weather_key', 'payment_id', 'total_passenger', 'fare_amount', 'tip_amount', 'total_amount', 'trip_distance']
+        df_clean = df_clean.reindex(columns=target_columns)
+
+        # [6] Make dim_datetime
+
+        all_time = pd.concat([df_clean['pickup_datetime'], df_clean['dropoff_datetime']])
+
+        dim_datetime = pd.DataFrame(all_time, columns=['date_key']).drop_duplicates().reset_index(drop=True)
+
+        dim_datetime = dim_datetime.sort_values(by='date_key').reset_index(drop=True)
+
+        dim_datetime['hour'] = dim_datetime['date_key'].dt.hour
+        dim_datetime['day'] = dim_datetime['date_key'].dt.day
+        dim_datetime['day_of_week'] = dim_datetime['date_key'].dt.weekday
+        dim_datetime['month'] = dim_datetime['date_key'].dt.month
+        dim_datetime['year'] = dim_datetime['date_key'].dt.year
+
+        dim_datetime['date_key'] = dim_datetime['date_key'].dt.strftime('%Y%m%d%H%M').astype(int)
+
+        # [7] Casting or wtv
+
+        df_clean['total_passenger'] = df_clean['total_passenger'].astype(int)
+
+        df_clean['weather_key'] = df_clean['pickup_datetime'].dt.strftime('%Y%m%d').astype(int)
+
+        df_clean['pickup_datetime'] = df_clean['pickup_datetime'].dt.strftime('%Y%m%d%H%M').astype(int)
+        df_clean['dropoff_datetime'] = df_clean['dropoff_datetime'].dt.strftime('%Y%m%d%H%M').astype(int)
+
+
+        return df_clean, dim_datetime
+    
+    except Exception as e:
+        logging.error(f"TRANSFORM FAILED : Error processing {file_name}. Details: {e}")
+        return None
 
 
 def transform_weather(file_path: str):
@@ -84,7 +190,7 @@ def transform_weather(file_path: str):
         null_count = df_clean.isnull().sum().sum()
 
         if null_count > 0:
-            df_clean = df_clean.interpolate(method='linear', limit_direction='both', limit=2)
+            df_clean = df_clean.interpolate(method='linear', limit_direction='both', limit=2, inplace=True)
             df_clean = df_clean.fillna(0)
 
             logging.info(f"STEP [2/6]     : Imputed {null_count} null values using Interpolation.")
@@ -96,7 +202,7 @@ def transform_weather(file_path: str):
         dup_count = df_clean.duplicated().sum()
 
         if dup_count > 0:
-            df_clean = df_clean.drop_duplicates(keep='first')
+            df_clean = df_clean.drop_duplicates(keep='first', inplace=True)
 
             logging.info(f"STEP [3/6]     : Removed {dup_count} duplicate rows.")
 
@@ -134,3 +240,8 @@ def transform_weather(file_path: str):
         logging.error(f"TRANSFORM FAILED : Error processing {file_name}. Details: {e}")
         return None
 
+
+# transform_trip_data("landing/yellow_tripdata_2023-01.parquet")
+# transform_zone("landing/taxi_zone_lookup.csv")
+# dim_weather = transform_weather("landing/weather_2023_01.json")
+# print(dim_weather.head(5))
