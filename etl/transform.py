@@ -70,8 +70,6 @@ def transform_trip_data(file_path: str):
     target_year = int(file_info.group(1))
     target_month = int(file_info.group(2))
 
-    print(target_year)
-    print(target_month)
 
     logging.info(f"TRANSFORM START: Processing {file_name}")
     logging.info(f"FILE PATH      : {file_path}")
@@ -80,26 +78,26 @@ def transform_trip_data(file_path: str):
         # [1] Load Data
         df_clean = pd.read_parquet(file_path)
 
-        logging.info(f"STEP [1/6]     : CSV data loaded into DataFrame. Rows: {len(df_clean)}")
+        logging.info(f"STEP [1/7]     : Parquet data loaded into DataFrame. Rows: {len(df_clean)}")
 
         # [2] Drop Irrelevant Column
-        df_clean.drop(columns=[
-            'VendorID',
-            'RatecodeID',
-            'store_and_fwd_flag',
-            'extra',
-            'mta_tax',
-            'tolls_amount',
-            'improvement_surcharge',
-            'congestion_surcharge',
-            'airport_fee'
-            ],
-            inplace=True
+
+        cols_to_drop = [
+            'VendorID', 'RatecodeID', 'store_and_fwd_flag', 'extra', 
+            'mta_tax', 'tolls_amount', 'improvement_surcharge', 
+            'congestion_surcharge', 'airport_fee'
+        ]
+
+        df_clean.drop(
+            columns=cols_to_drop,
+            inplace=True,
+            errors='ignore'
         )
 
-        logging.info(f"STEP [2/n]     : Drop 'VendorID', 'RatecodeID', 'store_and_fwd_flag', 'extra', 'mta_tax', 'tolls_amount', 'improvement_surcharge', 'congestion_surcharge', 'airport_fee' column.")
+        logging.info(f"STEP [2/7]     : Removed {len(cols_to_drop)} irrelevant columns.")
 
-        # [3] Valdation Data
+        # [3] Validation Data
+        initial_rows = len(df_clean)
 
         mode_passenger = df_clean['passenger_count'].mode()[0]
         df_clean['passenger_count'] = df_clean['passenger_count'].replace(0, np.nan).fillna(mode_passenger)
@@ -107,18 +105,27 @@ def transform_trip_data(file_path: str):
         mean_distance = df_clean[df_clean['trip_distance'] > 0]['trip_distance'].mean()
         df_clean['trip_distance'] = df_clean['trip_distance'].replace(0, mean_distance)
 
-        df_clean = df_clean[(df_clean['fare_amount'] > 0) & (df_clean['total_amount'] > 0)]
+        df_clean = df_clean[(df_clean['fare_amount'] >= 0) & (df_clean['total_amount'] >= 0)]
+
+        valid_zero_payment = [3, 4, 6]
+        df_clean = df_clean[
+            (df_clean['total_amount'] > 0) | 
+            (df_clean['payment_type'].isin(valid_zero_payment))
+            ]
 
         df_clean = df_clean[
             (df_clean['tpep_pickup_datetime'].dt.year == target_year) & 
             (df_clean['tpep_pickup_datetime'].dt.month == target_month)
             ]
         
-        # [4] Renaming & Reorder Column
-
-        print(df_clean['passenger_count'].dtype)
+        rows_filtered = initial_rows - len(df_clean)
         
-        print(df_clean['passenger_count'].dtype)
+        logging.info(f"STEP [3/7]     : Cleaning complete.")
+        logging.info(f"   >>> Total rows processed: {initial_rows}")
+        logging.info(f"   >>> Anomaly rows removed: {rows_filtered}")
+        logging.info(f"   >>> Clean rows remaining: {len(df_clean)}")
+        
+        # [4] Renaming & Reorder Column
 
         df_clean.rename(
             columns={
@@ -132,39 +139,54 @@ def transform_trip_data(file_path: str):
             inplace=True
         )
 
+        logging.info("STEP [4/7]     : Columns renamed for Star Schema consistency.")
+
         # [5] Reorder Columns
 
         target_columns = ['pickup_location', 'dropoff_location', 'pickup_datetime', 'dropoff_datetime', 
                          'weather_key', 'payment_id', 'total_passenger', 'fare_amount', 'tip_amount', 'total_amount', 'trip_distance']
         df_clean = df_clean.reindex(columns=target_columns)
 
+        logging.info("STEP [5/7]     : Columns reordered to match Fact Table schema.")
+
         # [6] Make dim_datetime
 
         all_time = pd.concat([df_clean['pickup_datetime'], df_clean['dropoff_datetime']])
 
-        dim_datetime = pd.DataFrame(all_time, columns=['date_key']).drop_duplicates().reset_index(drop=True)
+        dim_datetime = pd.DataFrame(all_time, columns=['date_key'])
 
-        dim_datetime = dim_datetime.sort_values(by='date_key').reset_index(drop=True)
 
         dim_datetime['hour'] = dim_datetime['date_key'].dt.hour
         dim_datetime['day'] = dim_datetime['date_key'].dt.day
         dim_datetime['day_of_week'] = dim_datetime['date_key'].dt.weekday
+        day_map = {
+            0: 'mon', 1: 'tue', 2: 'wed', 3: 'thu', 4: 'fri', 5: 'sat', 6: 'sun'
+        }
+        dim_datetime['day_of_week'] = dim_datetime['day_of_week'].map(day_map)
         dim_datetime['month'] = dim_datetime['date_key'].dt.month
         dim_datetime['year'] = dim_datetime['date_key'].dt.year
 
         dim_datetime['date_key'] = dim_datetime['date_key'].dt.strftime('%Y%m%d%H%M').astype(int)
 
+        dim_datetime.drop_duplicates(subset=['date_key'], keep='first', inplace=True)
+        dim_datetime.reset_index(drop=True, inplace=True)
+
+        logging.info(f"STEP [6/7]     : Created datetime dimension table. Unique timestamps: {len(dim_datetime)}")
+
         # [7] Casting or wtv
 
         df_clean['total_passenger'] = df_clean['total_passenger'].astype(int)
 
-        df_clean['weather_key'] = df_clean['pickup_datetime'].dt.strftime('%Y%m%d').astype(int)
+        df_clean['weather_key'] = df_clean['pickup_datetime'].dt.strftime('%Y%m%d%H').astype(int)
 
         df_clean['pickup_datetime'] = df_clean['pickup_datetime'].dt.strftime('%Y%m%d%H%M').astype(int)
         df_clean['dropoff_datetime'] = df_clean['dropoff_datetime'].dt.strftime('%Y%m%d%H%M').astype(int)
 
+        logging.info("STEP [7/7]     : Final data types converted to INT8.")
 
-        return df_clean, dim_datetime
+
+        logging.info(f"TRANSFORM SUCCESS : {file_name} is ready. Final rows: {len(df_clean)}, {len(dim_datetime)}")        
+        return dim_datetime, df_clean
     
     except Exception as e:
         logging.error(f"TRANSFORM FAILED : Error processing {file_name}. Details: {e}")
@@ -239,9 +261,3 @@ def transform_weather(file_path: str):
     except Exception as e:
         logging.error(f"TRANSFORM FAILED : Error processing {file_name}. Details: {e}")
         return None
-
-
-# transform_trip_data("landing/yellow_tripdata_2023-01.parquet")
-# transform_zone("landing/taxi_zone_lookup.csv")
-# dim_weather = transform_weather("landing/weather_2023_01.json")
-# print(dim_weather.head(5))
