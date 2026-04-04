@@ -40,4 +40,4 @@ def auto_pipeline(year, start_month, end_month):
 
 if __name__ == "__main__":
     # Run the ETL pipeline for the year 2023 and months April to June
-    auto_pipeline(2023, 5, 6)
+    auto_pipeline(2023, 4, 6)

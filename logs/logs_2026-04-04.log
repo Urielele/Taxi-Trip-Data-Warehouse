@@ -1,0 +1,125 @@
+2026-04-04 19:56:06 - INFO - EXTRACT START: Downloading yellow_tripdata_2023-04.parquet
+2026-04-04 19:56:06 - INFO - SOURCE URL   : https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-04.parquet
+2026-04-04 19:56:20 - INFO - ARCHIVE SUCCESS: yellow_tripdata_2023-04.parquet
+2026-04-04 19:56:20 - INFO - DESTINATION    : raw/Trip Records/2023/4\yellow_tripdata_2023-04.parquet
+2026-04-04 19:56:20 - INFO - SUCCESS      : yellow_tripdata_2023-04.parquet saved to landing/yellow_tripdata_2023-04.parquet
+2026-04-04 19:56:20 - INFO - EXTRACT START: Downloading weather_2023_04.json
+2026-04-04 19:56:20 - INFO - SOURCE URL   : https://archive-api.open-meteo.com/v1/archive?latitude=40.71&longitude=-74&start_date=2023-04-01&end_date=2023-04-30&hourly=temperature_2m,precipitation,weather_code
+2026-04-04 19:56:21 - INFO - ARCHIVE SUCCESS: weather_2023_04.json
+2026-04-04 19:56:21 - INFO - DESTINATION    : raw/Weather/2023/4\weather_2023_04.json
+2026-04-04 19:56:21 - INFO - SUCCESS      : weather_2023_04.json saved to landing/weather_2023_04.json
+2026-04-04 19:56:21 - INFO - TRANSFORM START: Processing weather_2023_04.json
+2026-04-04 19:56:21 - INFO - FILE PATH      : landing/weather_2023_04.json
+2026-04-04 19:56:21 - INFO - STEP [1/6]     : JSON data loaded into DataFrame. Rows: 720
+2026-04-04 19:56:21 - INFO - STEP [2/6]     : No null values found.
+2026-04-04 19:56:21 - INFO - STEP [3/6]     : No duplicate rows found.
+2026-04-04 19:56:21 - INFO - STEP [4/6]     : Datetime converted and columns renamed.
+2026-04-04 19:56:21 - INFO - STEP [5/6]     : Created weather_key from timestamp.
+2026-04-04 19:56:21 - INFO - STEP [6/6]     : Columns reordered to match Database Schema.
+2026-04-04 19:56:21 - INFO - TRANSFORM SUCCESS: weather_2023_04.json is ready. Final rows: 720
+2026-04-04 19:56:21 - INFO - TRANSFORM START: Processing yellow_tripdata_2023-04.parquet
+2026-04-04 19:56:21 - INFO - FILE PATH      : landing/yellow_tripdata_2023-04.parquet
+2026-04-04 19:56:22 - INFO - STEP [1/7]     : Parquet data loaded into DataFrame. Rows: 3288250
+2026-04-04 19:56:23 - INFO - STEP [2/7]     : Removed 9 irrelevant columns.
+2026-04-04 19:56:25 - INFO - STEP [3/7]     : Cleaning complete.
+2026-04-04 19:56:25 - INFO -    >>> Total rows processed: 3288250
+2026-04-04 19:56:25 - INFO -    >>> Anomaly rows removed: 30502
+2026-04-04 19:56:25 - INFO -    >>> Clean rows remaining: 3257748
+2026-04-04 19:56:25 - INFO - STEP [4/7]     : Columns renamed for Star Schema consistency.
+2026-04-04 19:56:25 - INFO - STEP [5/7]     : Columns reordered to match Fact Table schema.
+2026-04-04 19:58:21 - INFO - STEP [6/7]     : Created datetime dimension table. Unique timestamps: 43307
+2026-04-04 20:00:44 - INFO - STEP [7/7]     : Final data types converted to INT8.
+2026-04-04 20:00:44 - INFO - TRANSFORM SUCCESS : yellow_tripdata_2023-04.parquet is ready. Final rows: 3257748, 43307
+2026-04-04 20:00:44 - INFO - LOAD START: Loading data into dim_weather table.
+2026-04-04 20:00:44 - INFO - ROWS TO LOAD : 720
+2026-04-04 20:00:44 - INFO - LOAD SUCCESS: Data loaded into dim_weather successfully.
+2026-04-04 20:00:44 - INFO - LOAD START: Loading data into dim_datetime table.
+2026-04-04 20:00:44 - INFO - ROWS TO LOAD : 43307
+2026-04-04 20:00:55 - INFO - LOAD SUCCESS: Data loaded into dim_datetime successfully.
+2026-04-04 20:00:55 - INFO - LOAD START: Loading data into fact_taxi_trips table.
+2026-04-04 20:00:55 - INFO - ROWS TO LOAD : 3257748
+2026-04-04 20:29:21 - INFO - LOAD SUCCESS: Data loaded into fact_taxi_trips successfully.
+2026-04-04 20:29:21 - INFO - EXTRACT START: Downloading yellow_tripdata_2023-05.parquet
+2026-04-04 20:29:21 - INFO - SOURCE URL   : https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-05.parquet
+2026-04-04 20:29:28 - INFO - ARCHIVE SUCCESS: yellow_tripdata_2023-05.parquet
+2026-04-04 20:29:28 - INFO - DESTINATION    : raw/Trip Records/2023/5\yellow_tripdata_2023-05.parquet
+2026-04-04 20:29:28 - INFO - SUCCESS      : yellow_tripdata_2023-05.parquet saved to landing/yellow_tripdata_2023-05.parquet
+2026-04-04 20:29:28 - INFO - EXTRACT START: Downloading weather_2023_05.json
+2026-04-04 20:29:28 - INFO - SOURCE URL   : https://archive-api.open-meteo.com/v1/archive?latitude=40.71&longitude=-74&start_date=2023-05-01&end_date=2023-05-31&hourly=temperature_2m,precipitation,weather_code
+2026-04-04 20:29:30 - INFO - ARCHIVE SUCCESS: weather_2023_05.json
+2026-04-04 20:29:30 - INFO - DESTINATION    : raw/Weather/2023/5\weather_2023_05.json
+2026-04-04 20:29:30 - INFO - SUCCESS      : weather_2023_05.json saved to landing/weather_2023_05.json
+2026-04-04 20:29:30 - INFO - TRANSFORM START: Processing weather_2023_05.json
+2026-04-04 20:29:30 - INFO - FILE PATH      : landing/weather_2023_05.json
+2026-04-04 20:29:30 - INFO - STEP [1/6]     : JSON data loaded into DataFrame. Rows: 744
+2026-04-04 20:29:30 - INFO - STEP [2/6]     : No null values found.
+2026-04-04 20:29:30 - INFO - STEP [3/6]     : No duplicate rows found.
+2026-04-04 20:29:30 - INFO - STEP [4/6]     : Datetime converted and columns renamed.
+2026-04-04 20:29:30 - INFO - STEP [5/6]     : Created weather_key from timestamp.
+2026-04-04 20:29:30 - INFO - STEP [6/6]     : Columns reordered to match Database Schema.
+2026-04-04 20:29:30 - INFO - TRANSFORM SUCCESS: weather_2023_05.json is ready. Final rows: 744
+2026-04-04 20:29:30 - INFO - TRANSFORM START: Processing yellow_tripdata_2023-05.parquet
+2026-04-04 20:29:30 - INFO - FILE PATH      : landing/yellow_tripdata_2023-05.parquet
+2026-04-04 20:29:31 - INFO - STEP [1/7]     : Parquet data loaded into DataFrame. Rows: 3513649
+2026-04-04 20:29:31 - INFO - STEP [2/7]     : Removed 9 irrelevant columns.
+2026-04-04 20:29:34 - INFO - STEP [3/7]     : Cleaning complete.
+2026-04-04 20:29:34 - INFO -    >>> Total rows processed: 3513649
+2026-04-04 20:29:34 - INFO -    >>> Anomaly rows removed: 32644
+2026-04-04 20:29:34 - INFO -    >>> Clean rows remaining: 3481005
+2026-04-04 20:29:34 - INFO - STEP [4/7]     : Columns renamed for Star Schema consistency.
+2026-04-04 20:29:34 - INFO - STEP [5/7]     : Columns reordered to match Fact Table schema.
+2026-04-04 20:31:45 - INFO - STEP [6/7]     : Created datetime dimension table. Unique timestamps: 44758
+2026-04-04 20:34:56 - INFO - STEP [7/7]     : Final data types converted to INT8.
+2026-04-04 20:34:56 - INFO - TRANSFORM SUCCESS : yellow_tripdata_2023-05.parquet is ready. Final rows: 3481005, 44758
+2026-04-04 20:34:56 - INFO - LOAD START: Loading data into dim_weather table.
+2026-04-04 20:34:56 - INFO - ROWS TO LOAD : 744
+2026-04-04 20:34:56 - INFO - LOAD SUCCESS: Data loaded into dim_weather successfully.
+2026-04-04 20:34:56 - INFO - LOAD START: Loading data into dim_datetime table.
+2026-04-04 20:34:56 - INFO - SKIPPED: 109 rows already exist in dim_datetime.
+2026-04-04 20:34:56 - INFO - ROWS TO LOAD : 44649
+2026-04-04 20:35:07 - INFO - LOAD SUCCESS: Data loaded into dim_datetime successfully.
+2026-04-04 20:35:07 - INFO - LOAD START: Loading data into fact_taxi_trips table.
+2026-04-04 20:35:07 - INFO - ROWS TO LOAD : 3481005
+2026-04-04 21:06:46 - INFO - LOAD SUCCESS: Data loaded into fact_taxi_trips successfully.
+2026-04-04 21:06:46 - INFO - EXTRACT START: Downloading yellow_tripdata_2023-06.parquet
+2026-04-04 21:06:46 - INFO - SOURCE URL   : https://d37ci6vzurychx.cloudfront.net/trip-data/yellow_tripdata_2023-06.parquet
+2026-04-04 21:06:58 - INFO - ARCHIVE SUCCESS: yellow_tripdata_2023-06.parquet
+2026-04-04 21:06:58 - INFO - DESTINATION    : raw/Trip Records/2023/6\yellow_tripdata_2023-06.parquet
+2026-04-04 21:06:58 - INFO - SUCCESS      : yellow_tripdata_2023-06.parquet saved to landing/yellow_tripdata_2023-06.parquet
+2026-04-04 21:06:58 - INFO - EXTRACT START: Downloading weather_2023_06.json
+2026-04-04 21:06:58 - INFO - SOURCE URL   : https://archive-api.open-meteo.com/v1/archive?latitude=40.71&longitude=-74&start_date=2023-06-01&end_date=2023-06-30&hourly=temperature_2m,precipitation,weather_code
+2026-04-04 21:06:59 - INFO - ARCHIVE SUCCESS: weather_2023_06.json
+2026-04-04 21:06:59 - INFO - DESTINATION    : raw/Weather/2023/6\weather_2023_06.json
+2026-04-04 21:06:59 - INFO - SUCCESS      : weather_2023_06.json saved to landing/weather_2023_06.json
+2026-04-04 21:06:59 - INFO - TRANSFORM START: Processing weather_2023_06.json
+2026-04-04 21:06:59 - INFO - FILE PATH      : landing/weather_2023_06.json
+2026-04-04 21:06:59 - INFO - STEP [1/6]     : JSON data loaded into DataFrame. Rows: 720
+2026-04-04 21:06:59 - INFO - STEP [2/6]     : No null values found.
+2026-04-04 21:06:59 - INFO - STEP [3/6]     : No duplicate rows found.
+2026-04-04 21:06:59 - INFO - STEP [4/6]     : Datetime converted and columns renamed.
+2026-04-04 21:06:59 - INFO - STEP [5/6]     : Created weather_key from timestamp.
+2026-04-04 21:06:59 - INFO - STEP [6/6]     : Columns reordered to match Database Schema.
+2026-04-04 21:06:59 - INFO - TRANSFORM SUCCESS: weather_2023_06.json is ready. Final rows: 720
+2026-04-04 21:06:59 - INFO - TRANSFORM START: Processing yellow_tripdata_2023-06.parquet
+2026-04-04 21:06:59 - INFO - FILE PATH      : landing/yellow_tripdata_2023-06.parquet
+2026-04-04 21:07:00 - INFO - STEP [1/7]     : Parquet data loaded into DataFrame. Rows: 3307234
+2026-04-04 21:07:01 - INFO - STEP [2/7]     : Removed 9 irrelevant columns.
+2026-04-04 21:07:03 - INFO - STEP [3/7]     : Cleaning complete.
+2026-04-04 21:07:03 - INFO -    >>> Total rows processed: 3307234
+2026-04-04 21:07:03 - INFO -    >>> Anomaly rows removed: 31876
+2026-04-04 21:07:03 - INFO -    >>> Clean rows remaining: 3275358
+2026-04-04 21:07:03 - INFO - STEP [4/7]     : Columns renamed for Star Schema consistency.
+2026-04-04 21:07:03 - INFO - STEP [5/7]     : Columns reordered to match Fact Table schema.
+2026-04-04 21:09:03 - INFO - STEP [6/7]     : Created datetime dimension table. Unique timestamps: 43326
+2026-04-04 21:11:59 - INFO - STEP [7/7]     : Final data types converted to INT8.
+2026-04-04 21:11:59 - INFO - TRANSFORM SUCCESS : yellow_tripdata_2023-06.parquet is ready. Final rows: 3275358, 43326
+2026-04-04 21:11:59 - INFO - LOAD START: Loading data into dim_weather table.
+2026-04-04 21:11:59 - INFO - ROWS TO LOAD : 720
+2026-04-04 21:12:00 - INFO - LOAD SUCCESS: Data loaded into dim_weather successfully.
+2026-04-04 21:12:00 - INFO - LOAD START: Loading data into dim_datetime table.
+2026-04-04 21:12:00 - INFO - SKIPPED: 118 rows already exist in dim_datetime.
+2026-04-04 21:12:00 - INFO - ROWS TO LOAD : 43208
+2026-04-04 21:12:10 - INFO - LOAD SUCCESS: Data loaded into dim_datetime successfully.
+2026-04-04 21:12:10 - INFO - LOAD START: Loading data into fact_taxi_trips table.
+2026-04-04 21:12:10 - INFO - ROWS TO LOAD : 3275358
+2026-04-04 21:38:05 - INFO - LOAD SUCCESS: Data loaded into fact_taxi_trips successfully.
